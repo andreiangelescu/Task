@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <table align="center" style="width:80%">
+        <tr>
+        <th>Task Title</th>
+        <th>Description</th>
+        <th>Due Date</th>
+        <th>Added Date / Updated</th>
+        <th>Edit / Delete buttons</th>
+        </tr>
+        
+        {% for task in tasklist %}
+        <tr>
+            <td>
+                <a href="" class="title" data-type="text" data-placement="right"
+                data-url="{% url 'task_manager:edit_in_page' %}"
+                data-pk="{{ task.pk }}" data-title="title">{{ task.title }}</a>
+            </td>
+
+            <td>
+                <a href="" class="description" data-type="text" data-placement="right" data-pk="{{ task.pk }}" 
+                data-url="{% url 'task_manager:edit_in_page' %}" data-title="description">{{ task.description }}</a>
+            </td>
+
+            <td>
+               <a href="" class="due_date" data-type="text"
+               data-url="{% url 'task_manager:edit_in_page' %}" data-placement="right" data-pk="{{ task.pk }}" data-title="due_date">{{ task.due_date }}</a>
+            </td>
+
+            <td>
+                {{ task.added }} / {{ task.updated }}
+            </td>
+
+            <td>
+                <a href="{{ task.get_edit_url }}"><button type="button" class="btn btn-warning">Edit</button></a>
+                <a href="{{ task.delete_task }}"><button type="button" class="btn btn-danger">Delete</button></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+
+{% endblock content %}

@@ -1,0 +1,10 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <form action="{% url 'task_manager:add' %}" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save Task" />
+    </form>
+
+{% endblock content %}

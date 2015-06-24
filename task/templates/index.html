@@ -1,0 +1,52 @@
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/bootstrap-editable.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/table.css" rel="stylesheet">
+
+  </head>
+
+<body>
+
+<nav class="navbar navbar-inverse">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'account_manager:create_user' %}">Register</a>
+            <a class="navbar-brand" href="{% url 'account_manager:login_user' %}">Login</a>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="{% url 'task_manager:tasks' %}">List of Tasks</a></li>
+              <li><a href="{% url 'task_manager:add' %}">Add New Task</a></li>
+              <li><a href="{% url 'account_manager:logout_user' %}">Logout</a></li>
+              <li><a href="">{{user.email}}</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+      {% block content %}
+      {% endblock content %}
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script> 
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap-editable.js"></script>
+    <script src="{{ STATIC_URL }}js/editable.js"></script>
+
+  </body>
+</html>
+
