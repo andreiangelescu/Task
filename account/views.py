@@ -51,11 +51,20 @@ class RegisterConfirm2Ways(FormView):
     #template_name = 'index.html'
     user = None
 
+    def activate_user(self, activation_key):
+        if MyUser.objects.filter(activation_key=activation_key).exists():
+            user = MyUser.objects.get(activation_key=activation_key)
+            user.is_active = True
+            user.save()
+            return user
+        else:
+            return False
+
     def get(self, request, activation_key=None):
         if activation_key:
-            res = MyUser().activate_user(activation_key)
-            if not res:
-                return render(request, 'task/AutoActivationKeyInvalid.html')
+            res = self.activate_user(activation_key)
+            if res is False:
+                return render(request, 'task/AutoActivationKeyIncorect.html', {'form':self.form_class})
             else:
                 return render(request, 'task/ActivationComplete.html')
         else:
@@ -64,7 +73,7 @@ class RegisterConfirm2Ways(FormView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            res = MyUser().activate_user(form.cleaned_data['activation_field'])
+            res = self.activate_user(form.cleaned_data['activation_field'])
             if not res:
                 return render(request, 'task/AutoActivationKeyInvalid.html')
             else:

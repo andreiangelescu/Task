@@ -82,14 +82,4 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
-    def activate_user(self, activation_key):
-        try:
-            user = MyUser.objects.get(activation_key=activation_key)
-        except:
-            return False
-        if activation_key == user.activation_key:
-            user.is_active = True
-            user.save()
-            return True
-        else:
-            return False
+    
