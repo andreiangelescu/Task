@@ -50,6 +50,7 @@ class RegisterConfirm2Ways(FormView):
     form_class = ActivationForm
     #template_name = 'index.html'
     user = None
+    success_url=''
 
     def activate_user(self, activation_key):
         if MyUser.objects.filter(activation_key=activation_key).exists():
