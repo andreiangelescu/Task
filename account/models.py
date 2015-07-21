@@ -38,7 +38,6 @@ class MyUserManager(BaseUserManager):
 
         return self._create_user(email, date_of_birth, password, **extra_fields)
 
-
 class MyUser(AbstractBaseUser):
     email = models.EmailField(
         verbose_name='email address',
