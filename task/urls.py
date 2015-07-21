@@ -17,6 +17,8 @@ urlpatterns = patterns('',
 	url(r'^delete/(?P<pk>[0-9]+)/$', delete_tasks, name='delete'),
 	url(r'^edit_in_page/$', edit_in_place, name='edit_in_page'),  #editare automata
 	#url(r'^editp/(?P<pk>[0-9]+)/$', edit_in_place, name='editp'),
+	#url(r'^browse/$', browse_by_name, name='browse'),
+	
 )
 
 

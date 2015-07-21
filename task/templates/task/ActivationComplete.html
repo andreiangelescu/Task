@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <h2 align="center">Activation Completed!</h2>
+    <p align="center">Your account is active!</p>
+    <p align="center">In order to use it go to Login page!</p>
+    <p align="center">Use the next link to login page!</p>
+    <p align="center"><a href="{% url 'account_manager:login_user' %}">Login to your account</a></p>
+
+{% endblock content %}

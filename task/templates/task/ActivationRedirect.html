@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <h2 align="center">Registration Complete!</h2>
+    <p align="center">Your account has been registered!</p>
+    <p align="center">In order to use your account, you must activate it!</p>
+    <p align="center">Use the next link for activation link!</p>
+    <p align="center"><a href="{% url 'account_manager:account_verification' %}">Actitate Your Account</a></p>
+	<p align="center">or for auto-activation click on following link</p>
+	<p align="center"><a href="https://login.yahoo.com/config/login?.src=fpctx&.intl=ro&.lang=ro-RO&.done=https://ro.yahoo.com/%3fp=us">Actitate your account the simple way!</a></p>
+{% endblock content %}

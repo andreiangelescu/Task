@@ -25,31 +25,27 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match")
         return password2
 
+    #clean email field
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        try:
+            MyUser._default_manager.get(email=email)
+        except MyUser.DoesNotExist:
+            return email
+        raise forms.ValidationError('This email is already in use!')
+
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
+            user.is_active = False
             user.save()
         return user
-
-
-class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field.
-    """
-
-    class Meta:
-        model = MyUser
-        fields = ('email', 'password', 'date_of_birth', 'is_active', 'is_admin')
-
-    def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
-        return self.initial["password"]
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+class ActivationForm(forms.Form):
+    activation_field = forms.CharField(required=True)

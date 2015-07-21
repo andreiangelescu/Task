@@ -20,6 +20,14 @@ def add_task(request):
         form = TaskForm()
     return render(request, 'task/addtask.html', {'form': form})
 
+# @login_required
+# def browse_by_name(request, initial=None):
+#     if initial:
+#         tasklist = Task.objects.filter(name__istartswith=initial)
+#     else:
+#         tasklist = Task.objects.all()   
+#     return render(request, 'tasklist.html', {'tasklist': tasklist, 'initial':initial,})
+
 @login_required
 def task_list(request):
     if request.user.is_admin:

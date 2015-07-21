@@ -1,39 +1,43 @@
 from urlparse import urlparse
 
+import datetime
+from django.utils import timezone
+
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, date_of_birth, password=None):
+
+    def _create_user(self, email, date_of_birth,  password, **extra_fields):
         """
-        Creates and saves a User with the given email, date of
-        birth and password.
+        Creates and saves a User with the given username, email and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
 
-        user = self.model(
-            email=self.normalize_email(email),
-            date_of_birth=date_of_birth,
-        )
-
+        user = self.model(email=self.normalize_email(email),
+                        date_of_birth=date_of_birth, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, date_of_birth, password):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        user = self.create_user(email,
-            password=password,
-            date_of_birth=date_of_birth
-        )
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
+    def create_user(self, email, date_of_birth, password, **extra_fields):
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_admin', False)
+        return self._create_user(email, date_of_birth, password, **extra_fields)
+
+    def create_superuser(self, email, date_of_birth, password, **extra_fields):
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_admin', True)
+
+        if extra_fields.get('is_active') is not True:
+            raise ValueError('Superuser must have is_active=True.')
+        if extra_fields.get('is_admin') is not True:
+            raise ValueError('Superuser must have is_admin=True.')
+
+        return self._create_user(email, date_of_birth, password, **extra_fields)
+
 
 class MyUser(AbstractBaseUser):
     email = models.EmailField(
@@ -41,10 +45,12 @@ class MyUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-
+    activation_key = models.CharField(max_length=40, blank=True)
+    #key_expires = models.DateTimeField(default=datetime.date.today())
+    
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -76,3 +82,15 @@ class MyUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+    def activate_user(self, activation_key):
+        try:
+            user = MyUser.objects.get(activation_key=activation_key)
+        except:
+            return False
+        if activation_key == user.activation_key:
+            user.is_active = True
+            user.save()
+            return True
+        else:
+            return False

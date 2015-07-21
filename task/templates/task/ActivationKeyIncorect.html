@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+	<h4><font color="red">The activation code is incorect!</font></h4>
+
+    <form action="{% url 'account_manager:account_verification' %}" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Validate!" />
+    </form>
+
+{% endblock content %}

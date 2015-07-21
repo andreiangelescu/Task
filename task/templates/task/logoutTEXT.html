@@ -1,0 +1,9 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+    <h2 align="center">Logged Out</h2>
+    <p align="center">You have been logged out!</p>
+    <p align="center"><a href={% url 'account_manager:login_user' %}>To Login page</a></p>
+
+{% endblock content %}

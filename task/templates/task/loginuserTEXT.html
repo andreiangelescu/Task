@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+	
+	<br>You didn't activate your account or you didn't register one yet...
+	<br><br><p><a href='https://login.yahoo.com/config/mail?.intl=us&.done=https%3A%2F%2Fus-mg6.mail.yahoo.com%3A443%2Fneo%2Flaunch%3F.rand%3D131tb8082o8qp#9766613397' target="_blank">To Email</a></p>
+	<p><a href="{% url 'account_manager:create_user' %}">To Registration page</a></p>
+    
+    <br><form action="{% url 'account_manager:login_user' %}" method="post">{% csrf_token %}
+        {{ form.as_p }}
+
+        <input type="submit" value="login" />
+    </form>
+
+{% endblock content %}

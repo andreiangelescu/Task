@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+zzzzzzzzzzzzz
+	<h1>
+		Browse Things{% if initial %} Starting with '{{initial|title}}'{% endif %}
+	</h1>
+
+	{% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
+		<a href="{% url 'task_manager:browse' initial=letter %}"
+		{% if initial == letter %}class="active"{% endif %}>
+		{{ letter|upper}}
+		</a>
+	{% endfor %}
+
+{% endblock content %}
