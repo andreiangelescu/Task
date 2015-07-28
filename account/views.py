@@ -1,9 +1,10 @@
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import utc
 from django.http import HttpResponseRedirect, HttpResponse
-
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
 from django.core.context_processors import csrf
 from forms import *
 from models import *
@@ -48,37 +49,32 @@ def create_user(request):
 
 class RegisterConfirm2Ways(FormView):
     form_class = ActivationForm
-    #template_name = 'index.html'
-    user = None
-    success_url=''
+    template_name = 'task/ActivationKey.html'
+    template_name_complete = 'task/ActivationComplete.html'
+    success_url = reverse_lazy('account_manager:activation_complete')
 
-    def activate_user(self, activation_key):
-        if MyUser.objects.filter(activation_key=activation_key).exists():
-            user = MyUser.objects.get(activation_key=activation_key)
-            user.is_active = True
-            user.save()
-            return user
-        else:
-            return False
-
-    def get(self, request, activation_key=None):
-        if activation_key:
-            res = self.activate_user(activation_key)
-            if res is False:
-                return render(request, 'task/AutoActivationKeyIncorect.html', {'form':self.form_class})
-            else:
-                return render(request, 'task/ActivationComplete.html')
-        else:
-            return render(request, 'task/ActivationKey.html', {'form':self.form_class})
+    def get(self, request, *args, **kwargs):
+        if "activation_key" in kwargs.keys():
+            self.activation_key = kwargs.get('activation_key')
+        return super(RegisterConfirm2Ways, self).get(request, *args, **kwargs)
     
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            res = self.activate_user(form.cleaned_data['activation_field'])
-            if not res:
-                return render(request, 'task/AutoActivationKeyInvalid.html')
+    def get_template_names(self):
+        if hasattr(self, 'activation_key'):
+            form = self.form_class({'activation_field':self.activation_key})
+            if form.is_valid():
+                return self.template_name_complete
             else:
-                return render(request, 'task/ActivationComplete.html')
+                raise forms.ValidationError('Activation key incorect!')
+        return super(RegisterConfirm2Ways, self).get_template_names()
+
+    # def get_context_data(self, **kwargs):
+    #     kwargs = super(RegisterConfirm2Ways, self).get_context_data(**kwargs)
+    #     if self.get_key_errors:
+    #         kwargs.update({'get_key_errors':self.get_key_errors})
+    #     return kwargs
+
+class ActivationComplete(TemplateView):
+    template_name = 'task/ActivationComplete.html'
 
 def login_user(request):
     form = LoginForm(request.POST)

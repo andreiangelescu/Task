@@ -49,3 +49,18 @@ class LoginForm(forms.Form):
 
 class ActivationForm(forms.Form):
     activation_field = forms.CharField(required=True)
+
+    def activate_user(self, activation_key):
+        if MyUser.objects.filter(activation_key=activation_key).exists():
+            self.user = MyUser.objects.get(activation_key=activation_key)
+            self.user.is_active = True
+            self.user.save()
+            return self.user
+        else:
+            return False
+
+    def clean(self):
+        user = self.activate_user(self.cleaned_data.get('activation_field'))
+        if not user:
+            raise forms.ValidationError('Activation key incorect!')
+        return super(ActivationForm, self).clean()
